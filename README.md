@@ -20,4 +20,4 @@ Diese Simulation kombiniert Craig Reynolds' **Boids-Algorithmus** (Schwarmverhal
 
 ## TODO
 
-1. Ram Optimisation (1800mb current)
+1. smoother visualasiation
