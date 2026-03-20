@@ -19,7 +19,7 @@ COUNT_RADIUS = 100
 
 # Pygame initialisieren
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.DOUBLEBUF | pygame.HWSURFACE)
 clock = pygame.time.Clock()
 
 class Boid:
@@ -120,7 +120,7 @@ class Boid:
         # Gewichte für die verschiedenen Verhaltensregeln
         self.apply_force(alignment * 1.0)
         self.apply_force(cohesion * 1.0)
-        self.apply_force(separation * 1.5)
+        self.apply_force(separation * 1.8)
 
     def draw(self, screen, boids):
         # 1. Nachbarn zählen (teuer für CPU, aber okay für RAM)
