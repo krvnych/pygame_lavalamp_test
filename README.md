@@ -16,3 +16,8 @@ Diese Simulation kombiniert Craig Reynolds' **Boids-Algorithmus** (Schwarmverhal
 2. Installiere die benötigte Bibliothek **Pygame**:
    ```bash
    pip install pygame
+
+
+## TODO
+
+1. Ram Optimisation (1800mb current)

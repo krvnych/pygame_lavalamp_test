@@ -149,22 +149,16 @@ def main():
     boids = [Boid() for _ in range(NUM_BOIDS)]
     grid_size = PERCEPTION_RADIUS
     
-    # NEU: Ein halbtransparentes Overlay für den Trail-Effekt
-    # Ein niedriger Alpha-Wert (z.B. 15-30) sorgt für längere Schweife
     trail_overlay = pygame.Surface((WIDTH, HEIGHT))
     trail_overlay.set_alpha(25) 
     trail_overlay.fill(BACKGROUND_COLOR)
-
-    # Einmal am Anfang den Hintergrund füllen
     screen.fill(BACKGROUND_COLOR)
 
     running = True
     while running:
-        # STATT screen.fill: Zeichne das halbtransparente Overlay
-        # Das dunkelt die alten Boid-Positionen schrittweise ab
         screen.blit(trail_overlay, (0, 0))
         
-        # 1. Gitter erstellen
+        # Gitter erstellen
         grid = {}
         for boid in boids:
             cell = (int(boid.position.x // grid_size), int(boid.position.y // grid_size))
@@ -176,19 +170,22 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-        # 2. Boids updaten und zeichnen
         for boid in boids:
-            nearby_boids = []
+            # OPTIMIERUNG: Wir sammeln die Boids direkt in einem Generator, 
+            # anstatt eine neue Liste nearby_boids = [] zu erstellen
             cx, cy = int(boid.position.x // grid_size), int(boid.position.y // grid_size)
-            for x in range(cx - 1, cx + 2):
-                for y in range(cy - 1, cy + 2):
-                    if (x, y) in grid:
-                        nearby_boids.extend(grid[(x, y)])
             
-            boid.flock(nearby_boids)
+            # Wir nutzen eine Generator-Expression, um Speicher zu sparen
+            nearby = [
+                nb for x in range(cx - 1, cx + 2) 
+                for y in range(cy - 1, cy + 2) 
+                if (x, y) in grid 
+                for nb in grid[(x, y)]
+            ]
+            
+            boid.flock(nearby)
             boid.update()
-            # Boids werden jetzt ÜBER das verblassende Overlay gezeichnet
-            boid.draw(screen, nearby_boids)
+            boid.draw(screen, nearby)
 
         pygame.display.flip()
         clock.tick(CLOCK_TICK)
